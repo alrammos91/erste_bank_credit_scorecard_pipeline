@@ -1,0 +1,16 @@
+table,check,severity,passed,n_affected,details,samples
+applications,required_columns_missing,ERROR,True,0,[],
+applications,invalid_enum(scorecard_version),ERROR,True,0,"allowed=['existing', 'pilot']",[]
+applications,invalid_enum(decision),ERROR,True,0,"allowed=['approved', 'declined']",[]
+applications,out_of_range(bureau_score),ERROR,True,0,expected 300-850,[]
+accounts,required_columns_missing,ERROR,True,0,[],
+accounts,invalid_date(activation_date),ERROR,True,0,,[]
+transactions,required_columns_missing,ERROR,True,0,[],
+transactions,negative_values(amount),ERROR,True,0,,[]
+transactions,invalid_date(transaction_date),ERROR,True,0,,[]
+payments,required_columns_missing,ERROR,True,0,[],
+payments,negative_values(amount),ERROR,True,0,,[]
+payments,invalid_date(payment_date),ERROR,True,0,,[]
+delinquency,required_columns_missing,ERROR,True,0,[],
+delinquency,invalid_enum(days_past_due),ERROR,True,0,"allowed=[0, 30, 60, 90]",[]
+delinquency,invalid_enum(default_flag),ERROR,True,0,"allowed=[0, 1]",[]

@@ -1,0 +1,40 @@
+{
+  "applications": {
+    "required": [
+      "application_id",
+      "scorecard_version",
+      "decision",
+      "bureau_score",
+      "product",
+      "channel",
+      "segment"
+    ],
+    "enums": {
+      "scorecard_version": ["existing", "pilot"],
+      "decision": ["approved", "declined"]
+    },
+    "ranges": { "bureau_score": [300, 850] },
+    "dup_id_cols": ["application_id"]
+  },
+  "accounts": {
+    "required": ["account_id", "application_id", "activation_date"],
+    "date_cols": ["activation_date"],
+    "dup_id_cols": ["account_id"]
+  },
+  "transactions": {
+    "required": ["transaction_id", "account_id", "transaction_date", "amount"],
+    "date_cols": ["transaction_date"],
+    "dup_id_cols": ["transaction_id"],
+    "non_negative": ["amount"]
+  },
+  "payments": {
+    "required": ["payment_id", "account_id", "payment_date", "amount"],
+    "date_cols": ["payment_date"],
+    "dup_id_cols": ["payment_id"],
+    "non_negative": ["amount"]
+  },
+  "delinquency": {
+    "required": ["account_id", "days_past_due", "default_flag"],
+    "enums": { "days_past_due": [0, 30, 60, 90], "default_flag": [0, 1] }
+  }
+}
