@@ -4,14 +4,15 @@ from faker import Faker
 from datetime import datetime, date, timedelta
 from pathlib import Path
 
+
 class EsteDataGenerator:
     """
-    Generates ONE day of synthetic data under erste_bank_data/YYYY-MM-DD/:
+    Generates ONE day of synthetic data under data/YYYY-MM-DD/:
 
     applications.csv : application_id, scorecard_version, decision, bureau_score, product, channel, segment
     accounts.csv     : account_id, application_id, activation_date
-    transactions.csv : transaction_id, account_id, transaction_date, amount
-    payments.csv     : payment_id, account_id, payment_date, amount
+    transactions.csv : account_id, transaction_date, amount
+    payments.csv     : account_id, payment_date, amount
     delinquency.csv  : account_id, days_past_due, default_flag
 
     Assumptions - Notes:
@@ -19,13 +20,12 @@ class EsteDataGenerator:
     - Accounts are created ONLY for approved applications (a subset of applications).
     - Transactions, payments, and delinquency are generated per active account.
     """
-    def __init__(self, n_apps: int = 200, seed: int = 42, overwrite: bool = False):
+    def __init__(self, n_apps: int = 200, seed: int | None = 42):
         self.fake = Faker()
         self.run_date = datetime.today().strftime("%Y-%m-%d")
         self.n_apps = n_apps
-        self.seed = seed
-        self.overwrite = overwrite
-
+        if seed is not None:
+            np.random.seed(seed)  # fix random numbers
         # Create a directory for the given run date under /data
         self.day_dir = Path("erste_bank_data") / self.run_date
         self.day_dir.mkdir(parents=True, exist_ok=True)
@@ -131,8 +131,6 @@ class EsteDataGenerator:
     
     def generate_and_save_all(self) -> dict:
         """Generate all data consistently and save to CSV files."""
-        # if self.day_dir.exists() and not self.overwrite:
-        #     raise FileExistsError(f"{self.day_dir} already exists; pass overwrite=True to replace")
         print(f"Generating synthetic data for {self.run_date} with {self.n_apps} applications...")
         
         # Generate data in proper sequence

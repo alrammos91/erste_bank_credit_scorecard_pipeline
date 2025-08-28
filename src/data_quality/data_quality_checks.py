@@ -11,36 +11,16 @@ import pandas as pd
 class DQResult:
     table: str
     check: str
-    severity: str  # INFO | WARNING | ERROR
+    severity: str
     passed: bool
     n_affected: int
     details: str = ""
-    samples: Optional[List[dict]] = None
 
 
 class DataQualityChecker:
+    """Config-driven DQ executor for the daily drop.
+       Schema JSON example is provided under config/.
     """
-    Basic Data Quality checks
-
-    Loads a JSON schema from disk (default: config/data_quality_schema.json) that defines
-    per-table requirements and validations.
-
-    Validations supported:
-      - File presence & required columns per table
-      - Extra columns (logged as INFO)
-      - Enum/domain membership
-      - Numeric ranges and non-negative amounts
-      - Date format (YYYY-MM-DD)
-      - Duplicate-ID scan per table column(s)
-
-    Usage
-    -----
-    dq = DataQualityChecker(day_dir="erste_bank_data/2025-08-25", schema_path="config/data_quality_schema.json")
-    ok = dq.evaluate_all(write_report=True)
-    if not ok:
-        raise SystemExit("DQ checks failed – see logs and report for details")
-    """
-
     def __init__(
             self, 
             day_dir: Path | str, 
@@ -116,8 +96,7 @@ class DataQualityChecker:
             severity=severity,
             passed=passed,
             n_affected=int(n_affected),
-            details=details,
-            samples=(samples.head(10).to_dict(orient="records") if isinstance(samples, pd.DataFrame) else None),
+            details=details
         )
         self.results.append(rec)
         level = logging.INFO if severity == "INFO" else (logging.WARNING if severity == "WARNING" else logging.ERROR)
@@ -219,7 +198,7 @@ class DataQualityChecker:
         return passed
 
     def write_report(self) -> None:
-        out_dir = Path("output")
+        out_dir = Path("quality_output")
         out_dir.mkdir(parents=True, exist_ok=True)
         report_json = out_dir / f"dq_report_{self.day_dir.name}.json"
         with report_json.open("w", encoding="utf-8") as f:

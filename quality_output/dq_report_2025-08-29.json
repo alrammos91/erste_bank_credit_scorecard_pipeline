@@ -5,8 +5,7 @@
     "severity": "ERROR",
     "passed": true,
     "n_affected": 0,
-    "details": "[]",
-    "samples": null
+    "details": "[]"
   },
   {
     "table": "applications",
@@ -14,8 +13,7 @@
     "severity": "ERROR",
     "passed": true,
     "n_affected": 0,
-    "details": "allowed=['existing', 'pilot']",
-    "samples": []
+    "details": "allowed=['existing', 'pilot']"
   },
   {
     "table": "applications",
@@ -23,8 +21,7 @@
     "severity": "ERROR",
     "passed": true,
     "n_affected": 0,
-    "details": "allowed=['approved', 'declined']",
-    "samples": []
+    "details": "allowed=['approved', 'declined']"
   },
   {
     "table": "applications",
@@ -32,8 +29,15 @@
     "severity": "ERROR",
     "passed": true,
     "n_affected": 0,
-    "details": "expected 300-850",
-    "samples": []
+    "details": "expected 300-850"
+  },
+  {
+    "table": "applications",
+    "check": "duplicate_id(application_id)",
+    "severity": "ERROR",
+    "passed": true,
+    "n_affected": 0,
+    "details": ""
   },
   {
     "table": "accounts",
@@ -41,8 +45,7 @@
     "severity": "ERROR",
     "passed": true,
     "n_affected": 0,
-    "details": "[]",
-    "samples": null
+    "details": "[]"
   },
   {
     "table": "accounts",
@@ -50,8 +53,15 @@
     "severity": "ERROR",
     "passed": true,
     "n_affected": 0,
-    "details": "",
-    "samples": []
+    "details": ""
+  },
+  {
+    "table": "accounts",
+    "check": "duplicate_id(account_id)",
+    "severity": "ERROR",
+    "passed": true,
+    "n_affected": 0,
+    "details": ""
   },
   {
     "table": "transactions",
@@ -59,8 +69,7 @@
     "severity": "ERROR",
     "passed": true,
     "n_affected": 0,
-    "details": "[]",
-    "samples": null
+    "details": "[]"
   },
   {
     "table": "transactions",
@@ -68,8 +77,7 @@
     "severity": "ERROR",
     "passed": true,
     "n_affected": 0,
-    "details": "",
-    "samples": []
+    "details": ""
   },
   {
     "table": "transactions",
@@ -77,8 +85,15 @@
     "severity": "ERROR",
     "passed": true,
     "n_affected": 0,
-    "details": "",
-    "samples": []
+    "details": ""
+  },
+  {
+    "table": "transactions",
+    "check": "duplicate_id(transaction_id)",
+    "severity": "ERROR",
+    "passed": true,
+    "n_affected": 0,
+    "details": ""
   },
   {
     "table": "payments",
@@ -86,8 +101,7 @@
     "severity": "ERROR",
     "passed": true,
     "n_affected": 0,
-    "details": "[]",
-    "samples": null
+    "details": "[]"
   },
   {
     "table": "payments",
@@ -95,8 +109,7 @@
     "severity": "ERROR",
     "passed": true,
     "n_affected": 0,
-    "details": "",
-    "samples": []
+    "details": ""
   },
   {
     "table": "payments",
@@ -104,8 +117,15 @@
     "severity": "ERROR",
     "passed": true,
     "n_affected": 0,
-    "details": "",
-    "samples": []
+    "details": ""
+  },
+  {
+    "table": "payments",
+    "check": "duplicate_id(payment_id)",
+    "severity": "ERROR",
+    "passed": true,
+    "n_affected": 0,
+    "details": ""
   },
   {
     "table": "delinquency",
@@ -113,8 +133,7 @@
     "severity": "ERROR",
     "passed": true,
     "n_affected": 0,
-    "details": "[]",
-    "samples": null
+    "details": "[]"
   },
   {
     "table": "delinquency",
@@ -122,8 +141,7 @@
     "severity": "ERROR",
     "passed": true,
     "n_affected": 0,
-    "details": "allowed=[0, 30, 60, 90]",
-    "samples": []
+    "details": "allowed=[0, 30, 60, 90]"
   },
   {
     "table": "delinquency",
@@ -131,7 +149,6 @@
     "severity": "ERROR",
     "passed": true,
     "n_affected": 0,
-    "details": "allowed=[0, 1]",
-    "samples": []
+    "details": "allowed=[0, 1]"
   }
 ]
