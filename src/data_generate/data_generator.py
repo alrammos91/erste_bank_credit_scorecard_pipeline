@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from faker import Faker
+import yaml
 from datetime import datetime, date, timedelta
 from pathlib import Path
 
@@ -21,14 +22,19 @@ class EsteDataGenerator:
     """
     def __init__(self, n_apps: int = 200, seed: int = 42, overwrite: bool = False):
         self.fake = Faker()
-        self.run_date = datetime.today().strftime("%Y-%m-%d")
+        self.run_date: str = datetime.today().strftime("%Y-%m-%d")
         self.n_apps = n_apps
         self.seed = seed
+        self.config_path: str = "config/pipeline_config.yaml"
         self.overwrite = overwrite
 
         # Create a directory for the given run date under /data
         self.day_dir = Path("erste_bank_data") / self.run_date
         self.day_dir.mkdir(parents=True, exist_ok=True)
+
+        # Load YAML configuration
+        with open(self.config_path, 'r') as f:
+            self.config = yaml.safe_load(f)
         
     def random_date_in_range(self, start: date, end: date) -> str:
         delta = (end - start).days
@@ -36,16 +42,20 @@ class EsteDataGenerator:
 
     def generate_applications(self) -> pd.DataFrame:
         """Generate synthetic credit card applications."""
+        products = self.config['dimensions']['products']
+        channels = self.config['dimensions']['channels']
+        segments = self.config['dimensions']['segments']
+        scorecard_versions = self.config['dimensions']['scorecard_versions']
         apps = []
         for _ in range(self.n_apps):
             apps.append({
                 "application_id": self.fake.uuid4(), # unique identifier of each application
-                "scorecard_version": np.random.choice(["existing", "pilot"], p=[0.5, 0.5]),
+                "scorecard_version": np.random.choice(scorecard_versions, p=[0.5, 0.5]),
                 "decision": np.random.choice(["approved", "declined"], p=[0.7, 0.3]),
                 "bureau_score": np.random.randint(300, 850),
-                "product": np.random.choice(["standard", "gold", "platinum"], p=[0.5, 0.35, 0.15]),
-                "channel": np.random.choice(["online", "branch"], p=[0.7, 0.3]),
-                "segment": np.random.choice(["retail", "student"], p=[0.85, 0.15])
+                "product": np.random.choice(products, p=[0.5, 0.35, 0.15]),
+                "channel": np.random.choice(channels, p=[0.7, 0.3]),
+                "segment": np.random.choice(segments, p=[0.85, 0.15])
             })
 
         applications = pd.DataFrame(apps)

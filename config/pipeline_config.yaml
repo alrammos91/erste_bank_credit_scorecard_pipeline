@@ -1,0 +1,85 @@
+# Credit Scorecard Pipeline Configuration
+# Case Study Bonus Requirement: Use YAML to define dimensions AND metrics
+
+# Business Dimensions - easily add new ones here
+dimensions:
+  products:
+    - "standard"
+    - "gold" 
+    - "platinum"
+    
+  channels:
+    - "online"
+    - "branch"
+    
+  segments:
+    - "retail"
+    - "student"
+    
+  scorecard_versions:
+    - "existing"
+    - "pilot"
+
+# Metrics Configuration - define what to calculate
+metrics:
+  # Primary metrics from main performance table
+  primary_metrics:
+    source_table: "application_performance"
+    core_metrics:
+      - name: "total_applications"
+        description: "Number of applications"
+        sql_expression: "COUNT(*)"
+        table_columns: []
+        
+      - name: "approval_rate_pct"
+        description: "Approval rate (%)"
+        sql_expression: "ROUND(AVG(CASE WHEN decision = 'approved' THEN 1.0 ELSE 0.0 END) * 100, 2)"
+        table_columns: ["decision"]
+        
+      - name: "activation_rate_pct" 
+        description: "Activation rate (% of approved who activated)"
+        sql_expression: "ROUND(AVG(CASE WHEN decision = 'approved' THEN activated_flag ELSE NULL END) * 100, 2)"
+        table_columns: ["decision", "activated_flag"]
+        
+      - name: "avg_credit_score"
+        description: "Average credit score"
+        sql_expression: "ROUND(AVG(bureau_score), 1)"
+        table_columns: ["bureau_score"]
+        
+      - name: "default_rate_pct"
+        description: "Default rate (%)"
+        sql_expression: "ROUND(AVG(default_flag) * 100, 2)"
+        table_columns: ["default_flag"]
+        
+      - name: "avg_spend_amount_30d"
+        description: "Spend behavior (30-day average for activated accounts)"
+        sql_expression: "ROUND(AVG(CASE WHEN activated_flag = 1 THEN txn_amount_30d ELSE NULL END), 2)"
+        table_columns: ["activated_flag", "txn_amount_30d"]
+        
+      - name: "avg_payment_amount_30d"
+        description: "Payment behavior (30-day average for activated accounts)" 
+        sql_expression: "ROUND(AVG(CASE WHEN activated_flag = 1 THEN pmt_amount_30d ELSE NULL END), 2)"
+        table_columns: ["activated_flag", "pmt_amount_30d"]
+
+  # Additional metrics from other tables
+  extended_metrics:
+    - name: "avg_transaction_frequency"
+      description: "Average number of transactions per month"
+      source_table: "transactions_clean"
+      sql_expression: "ROUND(AVG(monthly_txn_count), 1)"
+      table_columns: ["monthly_txn_count"]
+      join_condition: "transactions_clean.account_id = application_performance.account_id"
+      
+    - name: "payment_consistency_rate"
+      description: "Rate of on-time payments (%)"
+      source_table: "payments_clean"
+      sql_expression: "ROUND(AVG(CASE WHEN payment_status = 'on_time' THEN 1.0 ELSE 0.0 END) * 100, 2)"
+      table_columns: ["payment_status"]
+      join_condition: "payments_clean.account_id = application_performance.account_id"
+      
+    - name: "delinquency_severity_score"
+      description: "Average delinquency severity (days past due)"
+      source_table: "delinquency_clean"
+      sql_expression: "ROUND(AVG(days_past_due), 1)"
+      table_columns: ["days_past_due"]
+      join_condition: "delinquency_clean.account_id = application_performance.account_id"

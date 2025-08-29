@@ -7,7 +7,9 @@ from data_generate.data_generator import EsteDataGenerator
 from data_quality.data_quality_checks import DataQualityChecker
 from data_load.data_staging import SQLiteStagingLoader
 from data_clean.data_cleaning import SQLiteCleaner
-from data_marts.reference_tables import ReferenceTablesManager
+from fact_dim.dim_reference_tables import ReferenceTablesManager
+from fact_dim.fact_application_performance import ApplicationPerformanceBuilder
+from data_mart.scorecard_metrics import ScorecardMetricsCalculator
 
 
 def execute_pipeline() -> None:
@@ -56,7 +58,22 @@ def execute_pipeline() -> None:
         ref_manager.setup_reference_tables()
         ref_manager.close()
 
-        audit.end_run(batch_id, status="success", message="generate + DQ + staging + clean + reference tables complete")
+        # Build performance fact table
+        performance_builder = ApplicationPerformanceBuilder(args.db)
+        performance_builder.connect()
+        performance_builder.save_performance_table(gen.run_date)
+        performance_builder.close()
+
+        # Calculate and compare scorecard metrics
+        metrics_calculator = ScorecardMetricsCalculator(args.db)
+        metrics_calculator.connect()
+        
+        # Generate CSV with all dimensions for easy Excel filtering
+        metrics_calculator.generate_scorecard_comparison_csv(gen.run_date)
+        
+        metrics_calculator.close()
+
+        audit.end_run(batch_id, status="success", message="Complete pipeline: data + DQ + staging + clean + fact/dim + metrics")
 
     except Exception as e:
         audit.end_run(batch_id, status="failed", message=str(e))

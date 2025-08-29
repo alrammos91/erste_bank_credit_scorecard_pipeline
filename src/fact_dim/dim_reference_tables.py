@@ -77,7 +77,7 @@ class ReferenceTablesManager:
     
     def __init__(self, db_path: str | Path):
         self.db_path = str(db_path)
-        self.con: sqlite3.Connection
+        self.con: sqlite3.Connection | None = None
     
     def connect(self) -> sqlite3.Connection:
         if not self.con:
