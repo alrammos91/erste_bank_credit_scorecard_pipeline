@@ -205,4 +205,3 @@ class DataQualityChecker:
         rows = [asdict(r) for r in self.results]
         pd.DataFrame(rows).to_csv(out_dir / f"dq_report_{self.day_dir.name}.csv", index=False)
         self.logger.info("Wrote DQ report to %s", report_json)
-
