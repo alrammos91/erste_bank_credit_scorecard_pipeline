@@ -54,13 +54,12 @@ class DataQualityChecker:
         logger = logging.getLogger(f"DQ-{self.day_dir.name}")
         logger.setLevel(logging.INFO)
         if not logger.handlers:
+            # File handler only - no console output for clean pipeline execution
             handler = RotatingFileHandler(log_path, maxBytes=2_000_000, backupCount=3)
             fmt = logging.Formatter("%(asctime)s | %(levelname)s | %(message)s")
             handler.setFormatter(fmt)
             logger.addHandler(handler)
-            stream = logging.StreamHandler()
-            stream.setFormatter(fmt)
-            logger.addHandler(stream)
+            # Removed StreamHandler for clean console output
         logger.info("Initialized DQ logger at %s", log_path)
         return logger
 

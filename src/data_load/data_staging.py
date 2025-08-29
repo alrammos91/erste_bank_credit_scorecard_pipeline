@@ -140,7 +140,7 @@ class SQLiteStagingLoader:
                 print(f"Loaded {len(df):5d} rows into stg_{name}")
 
             self.con.commit()
-            print(f"SQLite staging load complete → {self.sqlite_path}")
+            print(f"SQLite staging load complete in {self.sqlite_path}")
         except Exception as e:
             self.con.rollback()
             raise
